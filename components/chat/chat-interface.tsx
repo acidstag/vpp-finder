@@ -28,9 +28,15 @@ const QUICK_REPLIES = {
     { text: "Sonnen", value: "Sonnen" },
     { text: "Other brand", value: "I have a different brand" },
   ],
+  solar: [
+    { text: "Around 6.6kW", value: "Around 6.6kW" },
+    { text: "Around 10kW", value: "Around 10kW" },
+    { text: "No solar", value: "I don't have solar panels" },
+    { text: "Not sure", value: "I'm not sure of the size" },
+  ],
   retailerPreference: [
-    { text: "Keep current retailer", value: "I want to keep my current retailer" },
-    { text: "Open to switching", value: "I'm open to switching retailers" },
+    { text: "Happy to switch", value: "I'm happy to switch for better earnings" },
+    { text: "Keep current", value: "I'd prefer to keep my current retailer" },
     { text: "Need advice", value: "I need advice on this" },
   ],
 }
@@ -56,11 +62,55 @@ export function ChatInterface() {
     if (allText.includes('qualified:')) return { step: 5, replies: [] }
 
     // Detect what info has been provided by looking at user messages
-    const batteryBrands = ['tesla', 'powerwall', 'lg', 'lg chem', 'sonnen', 'sungrow', 'enphase', 'alpha', 'alphaess', 'byd', 'redback', 'growatt', 'goodwe', 'solax']
-    const hasBattery = batteryBrands.some(b => userMessages.includes(b)) || userMessages.includes('battery')
-    const hasPostcode = /\b\d{4}\b/.test(userMessages) // 4-digit postcode
-    const hasSolar = /\d+(\.\d+)?\s*kw/i.test(userMessages) || userMessages.includes('no solar') || userMessages.includes('don\'t have solar')
-    const hasRetailerPref = userMessages.includes('switch') || userMessages.includes('keep') || userMessages.includes('current retailer') || userMessages.includes('open to') || userMessages.includes('advice')
+    // Extended battery brand list with common misspellings
+    const batteryBrands = [
+      'tesla', 'powerwall', 'power wall',
+      'lg', 'lg chem', 'lgchem', 'lg-chem',
+      'sonnen', 'sonen', 'sonnon',
+      'sungrow', 'sun grow', 'sungrouw',
+      'enphase', 'enphaze',
+      'alpha', 'alphaess', 'alpha ess', 'alpha-ess',
+      'byd', 'b.y.d',
+      'redback', 'red back',
+      'growatt', 'growat',
+      'goodwe', 'good we',
+      'solax', 'sola x',
+      'fronius', 'huawei', 'pylontech', 'pylon',
+      'simpliphi', 'eguana', 'senec', 'varta'
+    ]
+    const hasBattery = batteryBrands.some(b => userMessages.includes(b))
+
+    // Postcode detection - must be valid Australian range (0200-9999)
+    const postcodeMatch = userMessages.match(/\b([0-9]{4})\b/)
+    const hasPostcode = postcodeMatch !== null && parseInt(postcodeMatch[1]) >= 200 && parseInt(postcodeMatch[1]) <= 9999
+
+    // Solar detection - multiple patterns
+    const solarPatterns = [
+      /\d+(\.\d+)?\s*kw/i,                    // "6.6kw", "10 kW"
+      /\d+(\.\d+)?\s*kilowatt/i,              // "6.6 kilowatts"
+      /no\s*solar/i,                          // "no solar"
+      /don'?t\s*have\s*(solar|panels)/i,      // "don't have solar", "dont have panels"
+      /no\s*panels/i,                         // "no panels"
+      /without\s*solar/i,                     // "without solar"
+      /not\s*yet.*solar/i,                    // "not yet got solar"
+      /none|nope|no(?:\s|$)/i,                // Simple "none", "nope" in context
+    ]
+    const hasSolar = solarPatterns.some(p => p.test(userMessages))
+
+    // Retailer preference detection - expanded patterns
+    const retailerPatterns = [
+      /switch/i, /keep/i, /stay/i,            // Direct terms
+      /current\s*retailer/i,                  // "current retailer"
+      /open\s*to/i,                           // "open to switching"
+      /happy\s*to/i,                          // "happy to switch"
+      /willing/i,                             // "willing to switch"
+      /don'?t\s*(mind|care)/i,                // "don't mind", "dont care"
+      /whatever/i,                            // "whatever works"
+      /advice/i,                              // "need advice"
+      /recommend/i,                           // "what do you recommend"
+      /best\s*(option|deal|earning)/i,        // "best option"
+    ]
+    const hasRetailerPref = retailerPatterns.some(p => p.test(userMessages))
 
     // Calculate step based on what's collected
     let step = 1
@@ -75,16 +125,16 @@ export function ChatInterface() {
 
     if (messages.length <= 2) {
       replies = QUICK_REPLIES.initial
-    } else if (lastAiMessage.includes('retailer') || lastAiMessage.includes('switch') || lastAiMessage.includes('stay with')) {
+    } else if (lastAiMessage.includes('retailer') || lastAiMessage.includes('switch') || lastAiMessage.includes('stay with') || lastAiMessage.includes('electricity provider')) {
       // Retailer preference question
       replies = QUICK_REPLIES.retailerPreference
-    } else if (lastAiMessage.includes('solar') || lastAiMessage.includes('kw') || lastAiMessage.includes('kilowatt')) {
-      // Solar question - no quick replies, let user type the kW
+    } else if (lastAiMessage.includes('solar') || lastAiMessage.includes('kw') || lastAiMessage.includes('kilowatt') || lastAiMessage.includes('panels')) {
+      // Solar question - show helpful quick replies
+      replies = QUICK_REPLIES.solar
+    } else if (lastAiMessage.includes('postcode') || lastAiMessage.includes('post code') || lastAiMessage.includes('suburb') || lastAiMessage.includes('area')) {
+      // Location question - no quick replies, user must type postcode
       replies = []
-    } else if (lastAiMessage.includes('postcode') || lastAiMessage.includes('location') || lastAiMessage.includes('where')) {
-      // Location question - no quick replies, let user type postcode
-      replies = []
-    } else if (lastAiMessage.includes('battery') || lastAiMessage.includes('brand') || lastAiMessage.includes('type')) {
+    } else if ((lastAiMessage.includes('battery') || lastAiMessage.includes('brand') || lastAiMessage.includes('type')) && !lastAiMessage.includes('solar')) {
       // Battery brand question - but only if not asking about solar
       replies = QUICK_REPLIES.batteryType
     }
