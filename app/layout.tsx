@@ -21,6 +21,10 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
   description: 'Compare 11 Virtual Power Plant programs in Australia. Earn $800-1,200/year from your battery. AI-powered matching in 2 minutes. Free, no signup required.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
   keywords: [
     'VPP Australia',
     'Virtual Power Plant',

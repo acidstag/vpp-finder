@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { Logo } from '@/components/ui/logo'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -20,13 +21,8 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-md bg-accent flex items-center justify-center">
-              <span className="text-background font-mono font-bold text-lg">V</span>
-            </div>
-            <span className="font-display font-bold text-xl group-hover:text-accent transition-colors">
-              VPP Finder
-            </span>
+          <Link href="/" className="group hover:opacity-80 transition-opacity">
+            <Logo size="md" />
           </Link>
 
           {/* Desktop Nav */}
