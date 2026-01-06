@@ -10,7 +10,6 @@ import { QualificationSuccess } from './qualification-success'
 import { EmailCaptureModal } from './email-capture-modal'
 import { QuickReplies } from './quick-replies'
 import { ConversationProgress } from './conversation-progress'
-import { ClearStorageButton } from '@/app/chat/clear-storage'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 
@@ -345,9 +344,6 @@ export function ChatInterface() {
 
   return (
     <div className="relative">
-      {/* Clear Storage Button (for testing - remove after fixing duplicates) */}
-      <ClearStorageButton />
-
       {/* Success Animation */}
       {showSuccess && <QualificationSuccess isVisible={showSuccess} />}
 
