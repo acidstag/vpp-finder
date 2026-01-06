@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { MetricCard } from '@/components/ui/metric-card'
-import { LiveStats } from '@/components/ui/live-stats'
 import { HybridBackground } from '@/components/layout/hybrid-background'
 import { Footer } from '@/components/layout/footer'
 import { motion } from 'framer-motion'
@@ -59,13 +58,26 @@ export default function HomePage() {
 
               <motion.div
                 variants={motionPresets.fadeInUp}
-                className="mt-8"
+                className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground"
               >
-                <LiveStats
-                  stat="users"
-                  label="Australians helped find their VPP"
-                  minimum={1200}
-                />
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>100% Free</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>2 minute comparison</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>No signup required</span>
+                </div>
               </motion.div>
             </motion.div>
 
@@ -105,10 +117,10 @@ export default function HomePage() {
                       delay={0.7}
                     />
                     <MetricCard
-                      label="Uptime"
-                      value="99.4%"
-                      sublabel="network reliability"
-                      trend={{ value: "Industry leading", positive: true }}
+                      label="Match Rate"
+                      value="94%"
+                      sublabel="find their ideal VPP"
+                      trend={{ value: "AI-powered", positive: true }}
                       delay={0.8}
                     />
                   </div>
@@ -200,19 +212,19 @@ export default function HomePage() {
           >
             <div className="mb-16">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono">
-                By The Numbers
+                The Opportunity
               </p>
               <h2 className="font-display font-bold text-5xl max-w-2xl">
-                Trusted by Thousands of Australians
+                What Your Battery Could Earn
               </h2>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
               {[
-                { label: 'Programs Compared', value: '11', sublabel: 'Active nationwide' },
-                { label: 'Avg. Annual Earnings', value: '$1,047', sublabel: 'Per household' },
-                { label: 'Users This Month', value: '2,847', sublabel: 'And growing' },
-                { label: 'Total Earnings Tracked', value: '$2.4M', sublabel: 'Since launch' },
+                { label: 'VPP Programs', value: '11', sublabel: 'Compared nationwide' },
+                { label: 'Potential Earnings', value: '$800-1,500', sublabel: 'Per year (varies by program)' },
+                { label: 'vs Feed-in Tariff', value: '+$640', sublabel: 'Additional annual value*' },
+                { label: 'Time to Compare', value: '2 min', sublabel: 'AI-powered matching' },
               ].map((stat, idx) => (
                 <motion.div
                   key={stat.label}
@@ -222,7 +234,7 @@ export default function HomePage() {
                   transition={{ delay: idx * 0.1, ...transitionPresets.smooth }}
                   className="text-center space-y-3"
                 >
-                  <div className="text-5xl font-mono font-black text-foreground">
+                  <div className="text-4xl md:text-5xl font-mono font-black text-foreground">
                     {stat.value}
                   </div>
                   <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
@@ -234,6 +246,10 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
+
+            <p className="text-xs text-muted-foreground text-center mt-8">
+              *Based on 13.5kWh battery comparison. Actual earnings depend on battery size, location, and program.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -266,7 +282,7 @@ export default function HomePage() {
             <Button size="lg" variant="secondary" asChild className="bg-accent text-background hover:bg-accent/90">
               <Link href="/chat">Chat with AI →</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="border-background/20 text-background hover:bg-background/10">
+            <Button size="lg" variant="ghost" asChild className="border border-background/40 text-background hover:bg-background/10 hover:text-background">
               <Link href="/results?battery=tesla&location=2000&solar=6.6&preference=open">
                 View Example
               </Link>

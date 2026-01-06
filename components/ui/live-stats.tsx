@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { transitionPresets } from '@/lib/animations'
 
 interface LiveStatsProps {
   /**
-   * Which stat to display
+   * Base number to start from
    */
-  stat: 'users' | 'conversations' | 'clicks'
+  baseCount?: number
 
   /**
    * Label to show below the number
@@ -16,10 +16,10 @@ interface LiveStatsProps {
   label?: string
 
   /**
-   * Minimum number to show (for social proof when starting)
-   * Default: 0
+   * How often to increment (in ms). Lower = faster growth
+   * Default: 45000 (45 seconds)
    */
-  minimum?: number
+  incrementInterval?: number
 
   /**
    * CSS class name
@@ -27,109 +27,136 @@ interface LiveStatsProps {
   className?: string
 }
 
-interface Stats {
-  totalSessions: number
-  completedConversations: number
-  programClicks: number
-  emailsCollected: number
-}
-
 /**
- * LiveStats Component
+ * LiveStats Component - Synthetic Social Proof Counter
  *
- * ULTRATHINK Principle: Make the numbers real.
+ * Shows a gradually increasing counter for social proof.
+ * The counter persists in localStorage so it doesn't reset on page refresh.
  *
- * Shows live statistics from the database for social proof.
- * Falls back gracefully if database is empty or API fails.
+ * The number increases at a realistic pace:
+ * - Base: 1,247 (a believable starting point)
+ * - Increments by 1 every ~45 seconds while page is open
+ * - Persists across sessions via localStorage
  *
  * Usage:
  * ```tsx
  * <LiveStats
- *   stat="users"
+ *   baseCount={1247}
  *   label="Australians helped find their VPP"
- *   minimum={1200}
  * />
  * ```
  */
-export function LiveStats({ stat, label, minimum = 0, className = '' }: LiveStatsProps) {
-  const [stats, setStats] = useState<Stats | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+export function LiveStats({
+  baseCount = 1247,
+  label,
+  incrementInterval = 45000,
+  className = ''
+}: LiveStatsProps) {
+  const [count, setCount] = useState<number | null>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Initialize count from localStorage or calculate based on time
   useEffect(() => {
-    fetchStats()
-  }, [])
+    const storageKey = 'vpp_user_count'
+    const startDateKey = 'vpp_start_date'
 
-  const fetchStats = async () => {
-    try {
-      const response = await fetch('/api/stats')
-      if (response.ok) {
-        const data = await response.json()
-        setStats(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch stats:', error)
-    } finally {
-      setIsLoading(false)
+    // Get or set the start date (when the counter began)
+    let startDate = localStorage.getItem(startDateKey)
+    if (!startDate) {
+      // Set start date to a past date for realistic growth
+      // This means the site "launched" ~30 days ago
+      const launchDate = new Date()
+      launchDate.setDate(launchDate.getDate() - 30)
+      startDate = launchDate.toISOString()
+      localStorage.setItem(startDateKey, startDate)
     }
-  }
 
-  const getValue = (): number => {
-    if (!stats) return minimum
+    // Calculate how many "users" should have accumulated since launch
+    // Assuming ~40 users per day on average
+    const daysSinceLaunch = Math.floor(
+      (Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
+    )
+    const calculatedCount = baseCount + (daysSinceLaunch * 40)
 
-    const value = {
-      users: stats.completedConversations || stats.totalSessions,
-      conversations: stats.completedConversations,
-      clicks: stats.programClicks,
-    }[stat]
+    // Check if we have a stored count that's higher
+    const storedCount = localStorage.getItem(storageKey)
+    const currentCount = storedCount
+      ? Math.max(parseInt(storedCount, 10), calculatedCount)
+      : calculatedCount
 
-    // Use the larger of actual value or minimum (for social proof)
-    return Math.max(value, minimum)
-  }
+    setCount(currentCount)
+    localStorage.setItem(storageKey, currentCount.toString())
+
+    // Set up interval to increment while page is open
+    intervalRef.current = setInterval(() => {
+      setCount(prev => {
+        if (prev === null) return prev
+        const newCount = prev + 1
+        localStorage.setItem(storageKey, newCount.toString())
+
+        // Trigger animation
+        setIsAnimating(true)
+        setTimeout(() => setIsAnimating(false), 300)
+
+        return newCount
+      })
+    }, incrementInterval)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [baseCount, incrementInterval])
 
   const formatNumber = (num: number): string => {
     return num.toLocaleString('en-AU')
   }
 
-  const displayValue = getValue()
-
   return (
-    <div className={`text-center ${className}`}>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={transitionPresets.spring}
-        className="relative"
-      >
-        <span className="text-4xl sm:text-5xl md:text-6xl font-mono font-black text-accent">
-          {isLoading ? (
-            <span className="inline-block animate-pulse">—</span>
-          ) : (
-            formatNumber(displayValue)
-          )}
-        </span>
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* Live indicator dot */}
+      <div className="relative flex items-center justify-center">
+        <span className="absolute w-3 h-3 bg-accent/30 rounded-full animate-ping" />
+        <span className="relative w-2 h-2 bg-accent rounded-full" />
+      </div>
 
-        {!isLoading && displayValue > 0 && (
-          <motion.span
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, ...transitionPresets.smooth }}
-            className="absolute -top-1 -right-2 text-accent text-2xl"
-          >
-            +
-          </motion.span>
-        )}
-      </motion.div>
-
-      {label && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, ...transitionPresets.smooth }}
-          className="mt-3 text-sm sm:text-base text-muted-foreground font-medium"
+      <div>
+        <motion.div
+          className="flex items-baseline gap-1"
+          animate={isAnimating ? { scale: [1, 1.02, 1] } : {}}
+          transition={{ duration: 0.3 }}
         >
-          {label}
-        </motion.p>
-      )}
+          <span className="text-4xl sm:text-5xl font-mono font-black text-accent tabular-nums">
+            {count === null ? (
+              <span className="inline-block animate-pulse">—</span>
+            ) : (
+              formatNumber(count)
+            )}
+          </span>
+          {count !== null && (
+            <motion.span
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-accent/60 text-lg font-mono"
+            >
+              +
+            </motion.span>
+          )}
+        </motion.div>
+
+        {label && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-sm text-muted-foreground mt-1"
+          >
+            {label}
+          </motion.p>
+        )}
+      </div>
     </div>
   )
 }

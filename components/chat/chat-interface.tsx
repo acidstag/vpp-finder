@@ -164,38 +164,53 @@ export function ChatInterface() {
 
       // Check if user is qualified
       if (aiMessage.includes('QUALIFIED:')) {
-        // Extract the qualification data
-        const match = aiMessage.match(/QUALIFIED:\s*(\{[^}]+\})/)
-        if (match) {
-          try {
-            const data = JSON.parse(match[1])
+        // Extract the qualification data - supports both pipe-separated and JSON formats
+        const pipeMatch = aiMessage.match(/QUALIFIED:\s*battery=([^|]+)\|location=([^|]+)\|solar=([^|]+)\|preference=(\w+)/)
+        const jsonMatch = aiMessage.match(/QUALIFIED:\s*(\{[^}]+\})/)
 
-            // Save conversation to database
-            await saveConversation(
-              messages.map(m => ({
-                role: m.role,
-                content: m.content,
-                timestamp: m.timestamp
-              })),
-              true, // qualified = true
-              sessionId,
-              conversationId
-            )
+        let data: { battery: string; location: string; solar: number | null; preference: string } | null = null
 
-            // Store qualification data for later use
-            setQualificationData(data)
-
-            // Show success animation
-            setShowSuccess(true)
-
-            // After 1.5 seconds, show email modal
-            setTimeout(() => {
-              setShowSuccess(false)
-              setShowEmailModal(true)
-            }, 1500)
-          } catch (e) {
-            console.error('Failed to parse qualification data:', e)
+        if (pipeMatch) {
+          // Parse pipe-separated format: battery=X|location=Y|solar=Z|preference=W
+          data = {
+            battery: pipeMatch[1].trim(),
+            location: pipeMatch[2].trim(),
+            solar: pipeMatch[3].trim().toLowerCase() === 'no' ? null : parseFloat(pipeMatch[3]),
+            preference: pipeMatch[4].trim()
           }
+        } else if (jsonMatch) {
+          // Fallback to JSON format for backwards compatibility
+          try {
+            data = JSON.parse(jsonMatch[1])
+          } catch (e) {
+            console.error('Failed to parse JSON qualification data:', e)
+          }
+        }
+
+        if (data) {
+          // Save conversation to database
+          await saveConversation(
+            messages.map(m => ({
+              role: m.role,
+              content: m.content,
+              timestamp: m.timestamp
+            })),
+            true, // qualified = true
+            sessionId,
+            conversationId
+          )
+
+          // Store qualification data for later use
+          setQualificationData(data)
+
+          // Show success animation
+          setShowSuccess(true)
+
+          // After 1.5 seconds, show email modal
+          setTimeout(() => {
+            setShowSuccess(false)
+            setShowEmailModal(true)
+          }, 1500)
         }
       }
     } catch (error) {
