@@ -70,14 +70,23 @@ export function ChatInterface() {
     if (hasBattery && hasPostcode && hasSolar && hasRetailerPref) step = 5
 
     // Determine quick replies based on what AI just asked
+    // Order matters: check more specific patterns first
     let replies: typeof QUICK_REPLIES.initial = []
 
     if (messages.length <= 2) {
       replies = QUICK_REPLIES.initial
-    } else if (lastAiMessage.includes('battery') || lastAiMessage.includes('brand') || lastAiMessage.includes('type')) {
-      replies = QUICK_REPLIES.batteryType
     } else if (lastAiMessage.includes('retailer') || lastAiMessage.includes('switch') || lastAiMessage.includes('stay with')) {
+      // Retailer preference question
       replies = QUICK_REPLIES.retailerPreference
+    } else if (lastAiMessage.includes('solar') || lastAiMessage.includes('kw') || lastAiMessage.includes('kilowatt')) {
+      // Solar question - no quick replies, let user type the kW
+      replies = []
+    } else if (lastAiMessage.includes('postcode') || lastAiMessage.includes('location') || lastAiMessage.includes('where')) {
+      // Location question - no quick replies, let user type postcode
+      replies = []
+    } else if (lastAiMessage.includes('battery') || lastAiMessage.includes('brand') || lastAiMessage.includes('type')) {
+      // Battery brand question - but only if not asking about solar
+      replies = QUICK_REPLIES.batteryType
     }
 
     return { step, replies }
