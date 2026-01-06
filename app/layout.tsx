@@ -66,6 +66,7 @@ export const metadata: Metadata = {
 }
 
 import { Navigation } from '@/components/layout/navigation'
+import { GoogleAnalytics } from '@/components/analytics/google-analytics'
 
 export default function RootLayout({
   children,
@@ -75,6 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${syne.variable} font-sans antialiased`}>
+        <GoogleAnalytics />
         <Navigation />
         <div className="pt-16">{children}</div>
       </body>
