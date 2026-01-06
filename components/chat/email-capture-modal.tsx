@@ -12,6 +12,8 @@ interface EmailCaptureModalProps {
   onClose: () => void
   onSubmit: (email: string) => void
   onSkip: () => void
+  matchCount?: number
+  battery?: string
 }
 
 /**
@@ -22,7 +24,7 @@ interface EmailCaptureModalProps {
  *
  * Expected capture rate: 30-50% (if presented as value, not interruption)
  */
-export function EmailCaptureModal({ isOpen, onClose, onSubmit, onSkip }: EmailCaptureModalProps) {
+export function EmailCaptureModal({ isOpen, onClose, onSubmit, onSkip, matchCount = 4, battery = 'your battery' }: EmailCaptureModalProps) {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -106,11 +108,25 @@ export function EmailCaptureModal({ isOpen, onClose, onSubmit, onSkip }: EmailCa
                 {/* Content */}
                 <div className="text-center space-y-4 mb-8">
                   <h2 className="font-display font-bold text-2xl">
-                    Perfect! I've Found Your Matches
+                    Great News! We Found {matchCount} Programs
                   </h2>
                   <p className="text-muted-foreground">
-                    Want me to email you the full comparison? You'll get a detailed breakdown of all programs, earnings estimates, and next steps.
+                    Your {battery} qualifies for {matchCount} VPP programs. Enter your email to see your personalized results and earnings estimates.
                   </p>
+                  <div className="flex flex-col gap-2 text-sm text-left bg-muted/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-accent">&#10003;</span>
+                      <span>See your personalized program matches</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-accent">&#10003;</span>
+                      <span>Get detailed earnings breakdown emailed</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-accent">&#10003;</span>
+                      <span>Receive updates when rates change</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Form */}
@@ -151,25 +167,23 @@ export function EmailCaptureModal({ isOpen, onClose, onSubmit, onSkip }: EmailCa
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
-                        'Sending...'
+                        'Loading Results...'
                       ) : (
                         <>
-                          Email Me Results
+                          Show My Results
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </>
                       )}
                     </Button>
 
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="lg"
-                      className="w-full"
+                      className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors py-2"
                       onClick={handleSkip}
                       disabled={isSubmitting}
                     >
-                      Skip, Show Me Now
-                    </Button>
+                      Skip for now (limited results)
+                    </button>
                   </div>
                 </form>
 

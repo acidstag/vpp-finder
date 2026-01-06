@@ -27,6 +27,12 @@ const serverEnvSchema = z.object({
     .min(1, 'ANTHROPIC_API_KEY is required')
     .startsWith('sk-ant-', 'ANTHROPIC_API_KEY must start with sk-ant-'),
 
+  RESEND_API_KEY: z
+    .string()
+    .min(1, 'RESEND_API_KEY is required for email functionality')
+    .startsWith('re_', 'RESEND_API_KEY must start with re_')
+    .optional(),
+
   NEXT_PUBLIC_SUPABASE_URL: z
     .string()
     .min(1, 'NEXT_PUBLIC_SUPABASE_URL is required')
@@ -42,7 +48,7 @@ const serverEnvSchema = z.object({
 
   ANTHROPIC_MODEL: z
     .string()
-    .default('claude-sonnet-4-20250514'),
+    .default('claude-haiku-3-5-20241022'),
 
   RATE_LIMIT_REQUESTS: z
     .string()

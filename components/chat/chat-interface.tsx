@@ -297,8 +297,28 @@ export function ChatInterface() {
   }
 
   const handleEmailSubmit = async (email: string) => {
-    // Save email to database
+    if (!qualificationData) return
+
+    // Save email to database with qualification data
     await saveEmail(email, sessionId, 'chat')
+
+    // Send results email
+    try {
+      await fetch('/api/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          battery: qualificationData.battery,
+          location: qualificationData.location,
+          solar: qualificationData.solar,
+          preference: qualificationData.preference,
+        }),
+      })
+    } catch (error) {
+      console.error('Failed to send results email:', error)
+      // Continue anyway - don't block the user
+    }
 
     // Close modal and redirect
     setShowEmailModal(false)
@@ -337,6 +357,8 @@ export function ChatInterface() {
         onClose={() => setShowEmailModal(false)}
         onSubmit={handleEmailSubmit}
         onSkip={handleEmailSkip}
+        matchCount={11}
+        battery={qualificationData?.battery || 'your battery'}
       />
 
       <div className="flex flex-col h-screen bg-background">
