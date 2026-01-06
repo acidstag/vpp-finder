@@ -46,35 +46,41 @@ export function ChatInterface() {
 
   const { messages, isStreaming, sessionId, conversationId, hasHydrated, addMessage, updateLastMessage, setStreaming } = useChatStore()
 
-  // Determine current conversation step and quick replies
+  // Determine current conversation step based on what info has been collected
   const getConversationState = () => {
+    const allText = messages.map(m => m.content.toLowerCase()).join(' ')
+    const userMessages = messages.filter(m => m.role === 'user').map(m => m.content.toLowerCase()).join(' ')
     const lastAiMessage = messages.filter(m => m.role === 'assistant').pop()?.content.toLowerCase() || ''
 
-    // Check for qualification
-    if (lastAiMessage.includes('qualified:')) return { step: 5, replies: [] }
+    // Check for qualification trigger
+    if (allText.includes('qualified:')) return { step: 5, replies: [] }
 
-    // Check what question was just asked
+    // Detect what info has been provided by looking at user messages
+    const batteryBrands = ['tesla', 'powerwall', 'lg', 'lg chem', 'sonnen', 'sungrow', 'enphase', 'alpha', 'alphaess', 'byd', 'redback', 'growatt', 'goodwe', 'solax']
+    const hasBattery = batteryBrands.some(b => userMessages.includes(b)) || userMessages.includes('battery')
+    const hasPostcode = /\b\d{4}\b/.test(userMessages) // 4-digit postcode
+    const hasSolar = /\d+(\.\d+)?\s*kw/i.test(userMessages) || userMessages.includes('no solar') || userMessages.includes('don\'t have solar')
+    const hasRetailerPref = userMessages.includes('switch') || userMessages.includes('keep') || userMessages.includes('current retailer') || userMessages.includes('open to') || userMessages.includes('advice')
+
+    // Calculate step based on what's collected
+    let step = 1
+    if (hasBattery) step = 2
+    if (hasBattery && hasPostcode) step = 3
+    if (hasBattery && hasPostcode && hasSolar) step = 4
+    if (hasBattery && hasPostcode && hasSolar && hasRetailerPref) step = 5
+
+    // Determine quick replies based on what AI just asked
+    let replies: typeof QUICK_REPLIES.initial = []
+
     if (messages.length <= 2) {
-      return { step: 1, replies: QUICK_REPLIES.initial }
+      replies = QUICK_REPLIES.initial
+    } else if (lastAiMessage.includes('battery') || lastAiMessage.includes('brand') || lastAiMessage.includes('type')) {
+      replies = QUICK_REPLIES.batteryType
+    } else if (lastAiMessage.includes('retailer') || lastAiMessage.includes('switch') || lastAiMessage.includes('stay with')) {
+      replies = QUICK_REPLIES.retailerPreference
     }
 
-    if (lastAiMessage.includes('battery') && lastAiMessage.includes('brand')) {
-      return { step: 1, replies: QUICK_REPLIES.batteryType }
-    }
-
-    if (lastAiMessage.includes('postcode') || lastAiMessage.includes('location')) {
-      return { step: 2, replies: [] } // No quick replies for postcode
-    }
-
-    if (lastAiMessage.includes('solar') && lastAiMessage.includes('kw')) {
-      return { step: 3, replies: [] } // No quick replies for solar size
-    }
-
-    if (lastAiMessage.includes('retailer') || lastAiMessage.includes('switch')) {
-      return { step: 4, replies: QUICK_REPLIES.retailerPreference }
-    }
-
-    return { step: 1, replies: [] }
+    return { step, replies }
   }
 
   const conversationState = getConversationState()
