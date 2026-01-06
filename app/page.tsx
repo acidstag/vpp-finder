@@ -32,7 +32,7 @@ export default function HomePage() {
               }}
             >
               <motion.div variants={motionPresets.fadeInUp} className="space-y-6">
-                <h1 className="font-display font-black text-7xl leading-tight tracking-tight">
+                <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-7xl leading-tight tracking-tight">
                   Find Your Perfect{' '}
                   <span className="text-accent">Virtual Power Plant</span>
                 </h1>
@@ -117,9 +117,9 @@ export default function HomePage() {
                       delay={0.7}
                     />
                     <MetricCard
-                      label="Match Rate"
-                      value="94%"
-                      sublabel="find their ideal VPP"
+                      label="Comparison Time"
+                      value="2 min"
+                      sublabel="average to match"
                       trend={{ value: "AI-powered", positive: true }}
                       delay={0.8}
                     />
@@ -146,7 +146,7 @@ export default function HomePage() {
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono">
                 Process
               </p>
-              <h2 className="font-display font-bold text-5xl">
+              <h2 className="font-display font-bold text-3xl md:text-5xl">
                 How It Works
               </h2>
             </div>
@@ -214,7 +214,7 @@ export default function HomePage() {
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono">
                 The Opportunity
               </p>
-              <h2 className="font-display font-bold text-5xl max-w-2xl">
+              <h2 className="font-display font-bold text-3xl md:text-5xl max-w-2xl">
                 What Your Battery Could Earn
               </h2>
             </div>
@@ -269,7 +269,7 @@ export default function HomePage() {
             <p className="text-xs uppercase tracking-widest text-background/60 mb-4 font-mono">
               Get Started
             </p>
-            <h2 className="font-display font-black text-5xl mb-6">
+            <h2 className="font-display font-black text-3xl md:text-5xl mb-6">
               Ready to Find Your VPP Match?
             </h2>
             <p className="text-xl text-background/80 max-w-2xl mx-auto leading-relaxed">
@@ -310,7 +310,7 @@ export default function HomePage() {
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono">
                 Available Programs
               </p>
-              <h2 className="font-display font-bold text-5xl mb-6">
+              <h2 className="font-display font-bold text-3xl md:text-5xl mb-6">
                 11 VPP Programs Compared
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
