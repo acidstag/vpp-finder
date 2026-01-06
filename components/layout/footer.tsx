@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from '@/components/ui/logo'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -9,12 +10,9 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-md bg-accent flex items-center justify-center">
-                <span className="text-background font-mono font-bold text-lg">V</span>
-              </div>
-              <span className="font-display font-bold text-xl">VPP Finder</span>
-            </div>
+            <Link href="/">
+              <Logo size="md" />
+            </Link>
             <p className="text-sm text-muted-foreground">
               Compare Virtual Power Plant programs and maximize your battery earnings.
             </p>
