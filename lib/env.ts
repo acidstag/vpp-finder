@@ -48,7 +48,7 @@ const serverEnvSchema = z.object({
 
   ANTHROPIC_MODEL: z
     .string()
-    .default('claude-haiku-3-5-20241022'),
+    .default('claude-3-5-haiku-20241022'),
 
   RATE_LIMIT_REQUESTS: z
     .string()
