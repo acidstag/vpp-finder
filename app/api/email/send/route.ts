@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
+import { render } from '@react-email/render'
 import { ResultsEmail } from '@/emails/results-email'
 import { matchPrograms, postcodeToRegion, type UserProfile } from '@/lib/matching'
 import { rateLimit } from '@/lib/rate-limit'
@@ -97,34 +98,37 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    // Render email to HTML
+    const emailHtml = await render(ResultsEmail({
+      battery,
+      location,
+      region,
+      solar,
+      preference,
+      topMatch: {
+        provider: topMatch.program.provider,
+        name: topMatch.program.name,
+        earningsMin: topMatch.estimatedEarnings.min,
+        earningsMax: topMatch.estimatedEarnings.max,
+        signupBonus: topMatch.program.signupBonus,
+        retailerLockin: topMatch.program.retailerLockin,
+        signupUrl: topMatch.program.signupUrl,
+      },
+      otherMatches: matches.slice(1, 4).map(m => ({
+        provider: m.program.provider,
+        name: m.program.name,
+        earningsMax: m.estimatedEarnings.max,
+        highlight: m.program.pros[0] || 'Great option',
+      })),
+      resultsUrl,
+    }))
+
     // Send the email
     const { data, error } = await resend.emails.send({
       from: 'VPP Finder <results@vppfinder.com.au>',
       to: normalizedEmail,
       subject: `Your VPP Match Results - ${battery} in ${location}`,
-      react: ResultsEmail({
-        battery,
-        location,
-        region,
-        solar,
-        preference,
-        topMatch: {
-          provider: topMatch.program.provider,
-          name: topMatch.program.name,
-          earningsMin: topMatch.estimatedEarnings.min,
-          earningsMax: topMatch.estimatedEarnings.max,
-          signupBonus: topMatch.program.signupBonus,
-          retailerLockin: topMatch.program.retailerLockin,
-          signupUrl: topMatch.program.signupUrl,
-        },
-        otherMatches: matches.slice(1, 4).map(m => ({
-          provider: m.program.provider,
-          name: m.program.name,
-          earningsMax: m.estimatedEarnings.max,
-          highlight: m.program.pros[0] || 'Great option',
-        })),
-        resultsUrl,
-      }),
+      html: emailHtml,
     })
 
     if (error) {

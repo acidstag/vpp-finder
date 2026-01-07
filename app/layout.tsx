@@ -21,6 +21,9 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
   description: 'Compare 11 Virtual Power Plant programs in Australia. Earn $800-1,200/year from your battery. AI-powered matching in 2 minutes. Free, no signup required.',
+  verification: {
+    google: 'FLseO-XErqngSTJ2JsrYZ_NVE_wNugpMXYiydUSLwMk',
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -65,10 +68,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  verification: {
-    // Add Google Search Console verification when available
-    // google: 'your-verification-code',
   },
 }
 

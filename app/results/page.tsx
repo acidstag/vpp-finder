@@ -13,7 +13,7 @@ import { resultsPageFAQ } from '@/data/faq'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ArrowLeft, LayoutGrid, Table } from 'lucide-react'
+import { ArrowLeft, LayoutGrid, Table, Calculator, MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { transitionPresets } from '@/lib/animations'
 
@@ -31,9 +31,15 @@ export default function ResultsPage() {
   const location = searchParams.get('location') || ''
   const solar = parseFloat(searchParams.get('solar') || '0') || null
   const preference = (searchParams.get('preference') || 'open') as 'keep' | 'open' | 'advice'
+  const source = searchParams.get('source') || 'chat'
 
   // Check if this is example data (coming from homepage/nav links)
   const isExampleData = battery === 'tesla' && location === '2000'
+
+  // Determine back navigation based on source
+  const backLink = source === 'calculator' ? '/calculator' : '/chat'
+  const backLabel = source === 'calculator' ? 'Back to Calculator' : 'Back to Chat'
+  const BackIcon = source === 'calculator' ? Calculator : MessageCircle
 
   const userProfile: UserProfile = {
     battery,
@@ -94,9 +100,9 @@ export default function ResultsPage() {
       <div className="container mx-auto px-4 space-y-8">
         {/* Back Button */}
         <Button variant="ghost" asChild>
-          <Link href="/chat">
+          <Link href={backLink}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Chat
+            {backLabel}
           </Link>
         </Button>
 

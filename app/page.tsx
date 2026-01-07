@@ -52,8 +52,8 @@ export default function HomePage() {
                   <Link href="/chat">Chat with AI →</Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="/results?battery=tesla&location=2000&solar=6.6&preference=open">
-                    See Example Results
+                  <Link href="/calculator">
+                    Quick Calculator
                   </Link>
                 </Button>
               </motion.div>
@@ -285,8 +285,8 @@ export default function HomePage() {
               <Link href="/chat">Chat with AI →</Link>
             </Button>
             <Button size="lg" variant="ghost" asChild className="border border-background/40 text-background hover:bg-background/10 hover:text-background">
-              <Link href="/results?battery=tesla&location=2000&solar=6.6&preference=open">
-                View Example
+              <Link href="/calculator">
+                Quick Calculator
               </Link>
             </Button>
           </div>

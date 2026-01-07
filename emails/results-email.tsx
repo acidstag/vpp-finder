@@ -66,62 +66,103 @@ export function ResultsEmail({
       <Preview>{previewText}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Header */}
+          {/* Header with Logo */}
           <Section style={header}>
-            <Text style={logo}>VPP Finder</Text>
+            <table cellPadding="0" cellSpacing="0" style={{ width: '100%' }}>
+              <tr>
+                <td>
+                  <Text style={logoText}>
+                    <span style={{ color: colors.accent }}>⚡</span> VPP Finder
+                  </Text>
+                </td>
+              </tr>
+            </table>
           </Section>
 
           {/* Hero */}
           <Section style={heroSection}>
-            <Heading style={heroHeading}>Your VPP Match Results</Heading>
+            <Text style={heroLabel}>YOUR PERSONALIZED RESULTS</Text>
+            <Heading style={heroHeading}>
+              We found your VPP match
+            </Heading>
             <Text style={heroSubtext}>
-              We found programs that match your {battery} in {location}
+              Based on your {battery} in {location}, here are your best options for earning passive income.
             </Text>
           </Section>
 
-          <Hr style={hr} />
-
-          {/* Your Setup */}
-          <Section style={section}>
-            <Text style={sectionLabel}>YOUR SETUP</Text>
-            <Text style={setupText}>
-              <strong>Battery:</strong> {battery}<br />
-              <strong>Location:</strong> {location} ({region})<br />
-              {solar && <><strong>Solar:</strong> {solar}kW<br /></>}
-              <strong>Retailer Preference:</strong> {preference === 'open' ? 'Open to switch' : preference === 'keep' ? 'Keep current' : 'Need advice'}
-            </Text>
+          {/* Setup Summary Card */}
+          <Section style={setupCard}>
+            <Text style={cardLabel}>YOUR SETUP</Text>
+            <table cellPadding="0" cellSpacing="0" style={{ width: '100%' }}>
+              <tr>
+                <td style={setupItem}>
+                  <Text style={setupLabel}>Battery</Text>
+                  <Text style={setupValue}>{battery}</Text>
+                </td>
+                <td style={setupItem}>
+                  <Text style={setupLabel}>Location</Text>
+                  <Text style={setupValue}>{location} ({region})</Text>
+                </td>
+              </tr>
+              <tr>
+                <td style={setupItem}>
+                  <Text style={setupLabel}>Solar</Text>
+                  <Text style={setupValue}>{solar ? `${solar}kW` : 'None'}</Text>
+                </td>
+                <td style={setupItem}>
+                  <Text style={setupLabel}>Retailer</Text>
+                  <Text style={setupValue}>
+                    {preference === 'open' ? 'Open to switch' : preference === 'keep' ? 'Keep current' : 'Need advice'}
+                  </Text>
+                </td>
+              </tr>
+            </table>
           </Section>
-
-          <Hr style={hr} />
 
           {/* Top Match */}
           <Section style={topMatchSection}>
-            <Text style={topMatchLabel}>YOUR TOP MATCH</Text>
+            <Text style={topMatchLabel}>TOP MATCH</Text>
             <Heading as="h2" style={topMatchHeading}>
-              {topMatch.provider} {topMatch.name}
+              {topMatch.provider}
             </Heading>
+            <Text style={topMatchName}>{topMatch.name}</Text>
 
             <Section style={earningsBox}>
-              <Text style={earningsLabel}>Estimated Annual Earnings</Text>
+              <Text style={earningsLabel}>ESTIMATED ANNUAL EARNINGS</Text>
               <Text style={earningsValue}>
                 ${topMatch.earningsMin.toLocaleString()} - ${topMatch.earningsMax.toLocaleString()}
               </Text>
               <Text style={earningsSubtext}>per year</Text>
             </Section>
 
-            <Section style={benefitsList}>
+            <table cellPadding="0" cellSpacing="0" style={{ width: '100%', marginTop: '16px' }}>
               {!topMatch.retailerLockin && (
-                <Text style={benefitItem}>No retailer switching required</Text>
+                <tr>
+                  <td style={benefitRow}>
+                    <Text style={checkmark}>✓</Text>
+                    <Text style={benefitText}>No retailer switching required</Text>
+                  </td>
+                </tr>
               )}
               {topMatch.signupBonus > 0 && (
-                <Text style={benefitItem}>${topMatch.signupBonus} sign-up bonus</Text>
+                <tr>
+                  <td style={benefitRow}>
+                    <Text style={checkmark}>✓</Text>
+                    <Text style={benefitText}>${topMatch.signupBonus} sign-up bonus</Text>
+                  </td>
+                </tr>
               )}
-              <Text style={benefitItem}>Works with your {battery}</Text>
-            </Section>
+              <tr>
+                <td style={benefitRow}>
+                  <Text style={checkmark}>✓</Text>
+                  <Text style={benefitText}>Compatible with {battery}</Text>
+                </td>
+              </tr>
+            </table>
 
             {topMatch.signupUrl && (
               <Button style={primaryButton} href={`${topMatch.signupUrl}?utm_source=vppfinder&utm_medium=email&utm_campaign=results`}>
-                Sign Up to {topMatch.provider}
+                Sign Up to {topMatch.provider} →
               </Button>
             )}
           </Section>
@@ -130,21 +171,27 @@ export function ResultsEmail({
 
           {/* Other Matches */}
           <Section style={section}>
-            <Text style={sectionLabel}>OTHER GREAT OPTIONS</Text>
+            <Text style={cardLabel}>OTHER OPTIONS</Text>
 
             {otherMatches.map((match, index) => (
-              <Section key={index} style={otherMatchRow}>
-                <Text style={otherMatchName}>
-                  {index + 2}. {match.provider} {match.name}
-                </Text>
-                <Text style={otherMatchDetails}>
-                  Up to ${match.earningsMax}/year - {match.highlight}
-                </Text>
+              <Section key={index} style={otherMatchCard}>
+                <table cellPadding="0" cellSpacing="0" style={{ width: '100%' }}>
+                  <tr>
+                    <td>
+                      <Text style={otherMatchProvider}>{match.provider}</Text>
+                      <Text style={otherMatchDetails}>{match.highlight}</Text>
+                    </td>
+                    <td style={{ textAlign: 'right' as const, verticalAlign: 'top' }}>
+                      <Text style={otherMatchEarnings}>Up to ${match.earningsMax}</Text>
+                      <Text style={otherMatchPeriod}>/year</Text>
+                    </td>
+                  </tr>
+                </table>
               </Section>
             ))}
 
-            <Button style={secondaryButton} href={`${resultsUrl}?utm_source=email&utm_campaign=results`}>
-              View Full Comparison
+            <Button style={secondaryButton} href={`${resultsUrl}&utm_source=email&utm_campaign=results`}>
+              View Full Comparison →
             </Button>
           </Section>
 
@@ -152,33 +199,40 @@ export function ResultsEmail({
 
           {/* Next Steps */}
           <Section style={section}>
-            <Text style={sectionLabel}>NEXT STEPS</Text>
-            <Text style={nextStepsText}>
-              1. Review the programs above<br />
-              2. Click through to sign up (takes 5-10 min)<br />
-              3. Start earning within 1-2 weeks
-            </Text>
-            <Text style={helpText}>
-              Questions? Just reply to this email - we read everything.
-            </Text>
+            <Text style={cardLabel}>NEXT STEPS</Text>
+            <table cellPadding="0" cellSpacing="0" style={{ width: '100%' }}>
+              <tr>
+                <td style={stepNumber}>1</td>
+                <td style={stepText}>Review your matched programs above</td>
+              </tr>
+              <tr>
+                <td style={stepNumber}>2</td>
+                <td style={stepText}>Click through to sign up (takes 5-10 min)</td>
+              </tr>
+              <tr>
+                <td style={stepNumber}>3</td>
+                <td style={stepText}>Start earning within 1-2 weeks</td>
+              </tr>
+            </table>
           </Section>
 
           <Hr style={hr} />
 
           {/* Footer */}
           <Section style={footer}>
+            <Text style={footerBrand}>VPP Finder</Text>
             <Text style={footerText}>
-              VPP Finder | vppfinder.com.au
+              The free comparison tool for Australian battery owners
             </Text>
-            <Text style={footerText}>
-              You're receiving this because you used VPP Finder to compare programs.
+            <Text style={footerLinks}>
+              <Link href="https://www.vppfinder.com.au" style={footerLink}>Website</Link>
+              {' • '}
+              <Link href="https://www.vppfinder.com.au/about" style={footerLink}>About</Link>
+              {' • '}
+              <Link href="https://www.vppfinder.com.au/unsubscribe" style={footerLink}>Unsubscribe</Link>
             </Text>
-            <Link href="https://vppfinder.com.au/unsubscribe" style={unsubscribeLink}>
-              Unsubscribe
-            </Link>
             <Text style={disclosureText}>
-              VPP Finder may earn a commission when you sign up through our links.
-              This does not affect our recommendations.
+              VPP Finder may earn a commission when you sign up through our links. This does not affect our recommendations.
             </Text>
           </Section>
         </Container>
@@ -187,137 +241,196 @@ export function ResultsEmail({
   )
 }
 
+// Brand Colors
+const colors = {
+  accent: '#10b981',
+  accentLight: '#d1fae5',
+  accentDark: '#065f46',
+  foreground: '#0a0a0a',
+  muted: '#737373',
+  border: '#e5e5e5',
+  background: '#fafafa',
+  card: '#ffffff',
+}
+
 // Styles
 const main = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+  backgroundColor: colors.background,
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
 }
 
 const container = {
-  backgroundColor: '#ffffff',
+  backgroundColor: colors.card,
   margin: '0 auto',
-  padding: '20px 0 48px',
-  marginBottom: '64px',
   maxWidth: '600px',
+  borderRadius: '8px',
+  overflow: 'hidden',
+  marginTop: '40px',
+  marginBottom: '40px',
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
 }
 
 const header = {
-  padding: '24px 32px',
+  padding: '32px 32px 24px',
+  borderBottom: `1px solid ${colors.border}`,
 }
 
-const logo = {
-  fontSize: '24px',
+const logoText = {
+  fontSize: '20px',
   fontWeight: '700',
-  color: '#0a0a0a',
+  color: colors.foreground,
   margin: '0',
+  lineHeight: '1',
 }
 
 const heroSection = {
-  padding: '0 32px',
+  padding: '32px',
   textAlign: 'center' as const,
+}
+
+const heroLabel = {
+  fontSize: '11px',
+  fontWeight: '600',
+  color: colors.accent,
+  letterSpacing: '1px',
+  textTransform: 'uppercase' as const,
+  margin: '0 0 12px',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
 const heroHeading = {
   fontSize: '28px',
   fontWeight: '700',
-  color: '#0a0a0a',
-  margin: '0 0 8px',
+  color: colors.foreground,
+  margin: '0 0 12px',
+  lineHeight: '1.2',
 }
 
 const heroSubtext = {
   fontSize: '16px',
-  color: '#666666',
+  color: colors.muted,
   margin: '0',
+  lineHeight: '1.5',
 }
 
-const hr = {
-  borderColor: '#e6ebf1',
-  margin: '24px 32px',
+const setupCard = {
+  margin: '0 32px 32px',
+  padding: '20px',
+  backgroundColor: colors.background,
+  borderRadius: '8px',
 }
 
-const section = {
-  padding: '0 32px',
-}
-
-const sectionLabel = {
+const cardLabel = {
   fontSize: '11px',
   fontWeight: '600',
-  color: '#8898aa',
-  letterSpacing: '0.5px',
+  color: colors.muted,
+  letterSpacing: '1px',
   textTransform: 'uppercase' as const,
-  margin: '0 0 12px',
+  margin: '0 0 16px',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
-const setupText = {
+const setupItem = {
+  padding: '8px 16px 8px 0',
+  verticalAlign: 'top' as const,
+}
+
+const setupLabel = {
+  fontSize: '11px',
+  color: colors.muted,
+  margin: '0 0 4px',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.5px',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+}
+
+const setupValue = {
   fontSize: '14px',
-  lineHeight: '24px',
-  color: '#525f7f',
+  fontWeight: '600',
+  color: colors.foreground,
   margin: '0',
 }
 
 const topMatchSection = {
-  padding: '0 32px',
+  padding: '0 32px 32px',
 }
 
 const topMatchLabel = {
   fontSize: '11px',
   fontWeight: '600',
-  color: '#10b981',
-  letterSpacing: '0.5px',
+  color: colors.accent,
+  letterSpacing: '1px',
   textTransform: 'uppercase' as const,
   margin: '0 0 8px',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
 const topMatchHeading = {
-  fontSize: '24px',
+  fontSize: '32px',
   fontWeight: '700',
-  color: '#0a0a0a',
-  margin: '0 0 16px',
+  color: colors.foreground,
+  margin: '0',
+  lineHeight: '1.2',
+}
+
+const topMatchName = {
+  fontSize: '16px',
+  color: colors.muted,
+  margin: '4px 0 20px',
 }
 
 const earningsBox = {
-  backgroundColor: '#f0fdf4',
+  backgroundColor: colors.accentLight,
   borderRadius: '8px',
-  padding: '20px',
+  padding: '24px',
   textAlign: 'center' as const,
-  marginBottom: '16px',
 }
 
 const earningsLabel = {
-  fontSize: '12px',
-  color: '#166534',
-  margin: '0 0 4px',
+  fontSize: '11px',
+  fontWeight: '600',
+  color: colors.accentDark,
+  letterSpacing: '1px',
   textTransform: 'uppercase' as const,
-  letterSpacing: '0.5px',
+  margin: '0 0 8px',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
 const earningsValue = {
-  fontSize: '32px',
+  fontSize: '36px',
   fontWeight: '700',
-  color: '#166534',
+  color: colors.accentDark,
   margin: '0',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
 const earningsSubtext = {
   fontSize: '14px',
-  color: '#166534',
+  color: colors.accentDark,
   margin: '4px 0 0',
 }
 
-const benefitsList = {
-  margin: '16px 0',
+const benefitRow = {
+  padding: '6px 0',
 }
 
-const benefitItem = {
+const checkmark = {
+  display: 'inline',
+  color: colors.accent,
+  fontWeight: '700',
+  marginRight: '8px',
   fontSize: '14px',
-  color: '#525f7f',
-  margin: '0 0 8px',
-  paddingLeft: '20px',
-  position: 'relative' as const,
+}
+
+const benefitText = {
+  display: 'inline',
+  fontSize: '14px',
+  color: colors.foreground,
+  margin: '0',
 }
 
 const primaryButton = {
-  backgroundColor: '#10b981',
+  backgroundColor: colors.accent,
   borderRadius: '6px',
   color: '#ffffff',
   fontSize: '16px',
@@ -326,14 +439,59 @@ const primaryButton = {
   textAlign: 'center' as const,
   display: 'block',
   padding: '14px 24px',
-  marginTop: '16px',
+  marginTop: '24px',
+}
+
+const hr = {
+  borderColor: colors.border,
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  margin: '0 32px',
+}
+
+const section = {
+  padding: '32px',
+}
+
+const otherMatchCard = {
+  padding: '16px',
+  backgroundColor: colors.background,
+  borderRadius: '6px',
+  marginBottom: '12px',
+}
+
+const otherMatchProvider = {
+  fontSize: '16px',
+  fontWeight: '600',
+  color: colors.foreground,
+  margin: '0 0 4px',
+}
+
+const otherMatchDetails = {
+  fontSize: '13px',
+  color: colors.muted,
+  margin: '0',
+}
+
+const otherMatchEarnings = {
+  fontSize: '18px',
+  fontWeight: '700',
+  color: colors.foreground,
+  margin: '0',
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+}
+
+const otherMatchPeriod = {
+  fontSize: '12px',
+  color: colors.muted,
+  margin: '0',
 }
 
 const secondaryButton = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #e6ebf1',
+  backgroundColor: colors.card,
+  border: `2px solid ${colors.border}`,
   borderRadius: '6px',
-  color: '#0a0a0a',
+  color: colors.foreground,
   fontSize: '14px',
   fontWeight: '600',
   textDecoration: 'none',
@@ -343,59 +501,65 @@ const secondaryButton = {
   marginTop: '16px',
 }
 
-const otherMatchRow = {
-  marginBottom: '12px',
-}
-
-const otherMatchName = {
-  fontSize: '15px',
+const stepNumber = {
+  width: '28px',
+  height: '28px',
+  backgroundColor: colors.foreground,
+  color: colors.card,
+  borderRadius: '50%',
+  textAlign: 'center' as const,
+  fontSize: '14px',
   fontWeight: '600',
-  color: '#0a0a0a',
-  margin: '0',
+  lineHeight: '28px',
+  verticalAlign: 'top' as const,
+  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
 }
 
-const otherMatchDetails = {
-  fontSize: '13px',
-  color: '#8898aa',
-  margin: '2px 0 0',
-}
-
-const nextStepsText = {
+const stepText = {
   fontSize: '14px',
-  lineHeight: '24px',
-  color: '#525f7f',
-  margin: '0 0 16px',
-}
-
-const helpText = {
-  fontSize: '14px',
-  color: '#8898aa',
+  color: colors.foreground,
   margin: '0',
-  fontStyle: 'italic',
+  paddingLeft: '12px',
+  paddingBottom: '12px',
+  verticalAlign: 'top' as const,
+  lineHeight: '28px',
 }
 
 const footer = {
-  padding: '0 32px',
+  padding: '32px',
   textAlign: 'center' as const,
+  backgroundColor: colors.background,
 }
 
-const footerText = {
-  fontSize: '12px',
-  color: '#8898aa',
+const footerBrand = {
+  fontSize: '16px',
+  fontWeight: '700',
+  color: colors.foreground,
   margin: '0 0 4px',
 }
 
-const unsubscribeLink = {
-  fontSize: '12px',
-  color: '#8898aa',
+const footerText = {
+  fontSize: '13px',
+  color: colors.muted,
+  margin: '0 0 16px',
+}
+
+const footerLinks = {
+  fontSize: '13px',
+  color: colors.muted,
+  margin: '0 0 16px',
+}
+
+const footerLink = {
+  color: colors.muted,
   textDecoration: 'underline',
 }
 
 const disclosureText = {
   fontSize: '11px',
-  color: '#b0b0b0',
-  margin: '16px 0 0',
-  lineHeight: '16px',
+  color: '#a3a3a3',
+  margin: '0',
+  lineHeight: '1.5',
 }
 
 export default ResultsEmail

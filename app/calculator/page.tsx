@@ -18,16 +18,16 @@ import {
 
 // Battery brand options with display names
 const BATTERY_BRANDS = [
-  { id: 'tesla-powerwall', name: 'Tesla Powerwall', icon: '⚡' },
-  { id: 'lg-chem', name: 'LG Chem', icon: '🔋' },
-  { id: 'sonnen', name: 'Sonnen', icon: '☀️' },
-  { id: 'sungrow', name: 'Sungrow', icon: '🌱' },
-  { id: 'byd', name: 'BYD', icon: '🔌' },
-  { id: 'enphase', name: 'Enphase', icon: '⭐' },
-  { id: 'alpha-ess', name: 'Alpha ESS', icon: '🔷' },
-  { id: 'redback', name: 'Redback', icon: '🔴' },
-  { id: 'goodwe', name: 'GoodWe', icon: '✨' },
-  { id: 'other', name: 'Other Brand', icon: '🔧' },
+  { id: 'tesla-powerwall', name: 'Tesla Powerwall' },
+  { id: 'lg-chem', name: 'LG Chem' },
+  { id: 'sonnen', name: 'Sonnen' },
+  { id: 'sungrow', name: 'Sungrow' },
+  { id: 'byd', name: 'BYD' },
+  { id: 'enphase', name: 'Enphase' },
+  { id: 'alpha-ess', name: 'Alpha ESS' },
+  { id: 'redback', name: 'Redback' },
+  { id: 'goodwe', name: 'GoodWe' },
+  { id: 'other', name: 'Other Brand' },
 ]
 
 const SOLAR_OPTIONS = [
@@ -125,6 +125,7 @@ export default function CalculatorPage() {
         location: formData.postcode,
         solar: formData.solar?.toString() || '0',
         preference: formData.preference,
+        source: 'calculator',
       })
       router.push(`/results?${params.toString()}`)
     }
@@ -248,7 +249,11 @@ export default function CalculatorPage() {
                           }
                         `}
                       >
-                        <div className="text-2xl mb-2">{brand.icon}</div>
+                        <div className={`w-8 h-8 mb-2 rounded-md flex items-center justify-center ${
+                          formData.battery === brand.name ? 'bg-accent/20' : 'bg-muted'
+                        }`}>
+                          <Battery className="w-4 h-4" />
+                        </div>
                         <div className="font-medium text-sm">{brand.name}</div>
                         {formData.battery === brand.name && (
                           <motion.div

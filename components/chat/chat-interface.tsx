@@ -344,6 +344,7 @@ export function ChatInterface() {
       location: qualificationData.location || '',
       solar: qualificationData.solar?.toString() || '0',
       preference: qualificationData.preference || 'open',
+      source: 'chat',
     })
     router.push(`/results?${params.toString()}`)
   }

@@ -78,6 +78,12 @@
   }
 }
 
+/* Disable ligatures for monospace font to prevent /kWh from garbling on mobile */
+.font-mono {
+  font-variant-ligatures: none;
+  -webkit-font-variant-ligatures: none;
+}
+
 /* Custom metric display styles */
 .metric-number {
   @apply font-mono font-medium text-4xl;
