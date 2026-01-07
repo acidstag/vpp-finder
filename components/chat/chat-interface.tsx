@@ -228,6 +228,9 @@ export function ChatInterface() {
 
       // Check if user is qualified
       if (aiMessage.includes('QUALIFIED:')) {
+        // Strip the QUALIFIED: line from displayed message
+        const cleanMessage = aiMessage.replace(/\n?QUALIFIED:.*$/m, '').trim()
+        updateLastMessage(cleanMessage)
         // Extract the qualification data - supports both pipe-separated and JSON formats
         const pipeMatch = aiMessage.match(/QUALIFIED:\s*battery=([^|]+)\|location=([^|]+)\|solar=([^|]+)\|preference=(\w+)/)
         const jsonMatch = aiMessage.match(/QUALIFIED:\s*(\{[^}]+\})/)
@@ -267,14 +270,17 @@ export function ChatInterface() {
           // Store qualification data for later use
           setQualificationData(data)
 
-          // Show success animation
-          setShowSuccess(true)
-
-          // After 1.5 seconds, show email modal
+          // Give user time to read the closing message before showing success
           setTimeout(() => {
-            setShowSuccess(false)
-            setShowEmailModal(true)
-          }, 1500)
+            // Show success animation
+            setShowSuccess(true)
+
+            // After 1.5 seconds, show email modal
+            setTimeout(() => {
+              setShowSuccess(false)
+              setShowEmailModal(true)
+            }, 1500)
+          }, 2000) // 2s delay to read the AI's closing message
         }
       }
     } catch (error) {
