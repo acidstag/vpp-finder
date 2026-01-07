@@ -33,12 +33,17 @@ CREATE TABLE IF NOT EXISTS users (
   -- Metadata
   source TEXT, -- 'chat', 'calculator', 'direct'
   referrer TEXT,
-  user_agent TEXT
+  user_agent TEXT,
+
+  -- Email subscription status
+  unsubscribed BOOLEAN DEFAULT FALSE,
+  unsubscribed_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Index for faster lookups
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_users_unsubscribed ON users(unsubscribed) WHERE unsubscribed = TRUE;
 
 -- =====================================================
 -- CONVERSATIONS TABLE

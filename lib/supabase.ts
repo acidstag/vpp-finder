@@ -142,11 +142,14 @@ export async function saveEmail(
   source: string = 'chat'
 ) {
   try {
+    // Normalize email to lowercase for consistency
+    const normalizedEmail = email.toLowerCase().trim()
+
     // Check if user already exists
     const { data: existingUser } = await supabase
       .from('users')
       .select('id')
-      .eq('email', email)
+      .eq('email', normalizedEmail)
       .single()
 
     if (existingUser) {
@@ -157,7 +160,7 @@ export async function saveEmail(
           updated_at: new Date().toISOString(),
           source: source,
         })
-        .eq('email', email)
+        .eq('email', normalizedEmail)
 
       if (error) console.error('Error updating user:', error)
       return existingUser.id
@@ -166,7 +169,7 @@ export async function saveEmail(
       const { data: newUser, error } = await supabase
         .from('users')
         .insert({
-          email,
+          email: normalizedEmail,
           source,
           referrer: typeof window !== 'undefined' ? document.referrer : null,
           user_agent: typeof window !== 'undefined' ? navigator.userAgent : null,

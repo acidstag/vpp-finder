@@ -2,12 +2,46 @@ import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
 import { ResultsEmail } from '@/emails/results-email'
 import { matchPrograms, postcodeToRegion, type UserProfile } from '@/lib/matching'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Initialize Resend - will be undefined if API key not set
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
+// Email validation regex (RFC 5322 compliant)
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+
+function isValidEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false
+  if (email.length > 254) return false // RFC 5321 max length
+  return EMAIL_REGEX.test(email)
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting - stricter for email endpoint (5 emails per minute)
+    const identifier = req.headers.get('x-forwarded-for') || req.ip || 'unknown'
+    const rateLimitResult = rateLimit({
+      identifier: `email:${identifier}`,
+      limit: 5,
+      windowSeconds: 60,
+    })
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          error: 'Too many requests',
+          message: 'Please wait before sending another email request.',
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter?.toString() || '60',
+          },
+        }
+      )
+    }
+
     const { email, battery, location, solar, preference } = await req.json()
 
     // Validate required fields
@@ -17,6 +51,17 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      )
+    }
+
+    // Normalize email to lowercase for consistency
+    const normalizedEmail = email.toLowerCase().trim()
 
     // Get matched programs
     const userProfile: UserProfile = {
@@ -43,7 +88,7 @@ export async function POST(req: NextRequest) {
     // If Resend is not configured, return success without sending
     // This allows the flow to work in development
     if (!resend) {
-      console.log('Resend not configured - would send email to:', email)
+      console.log('Resend not configured - would send email to:', normalizedEmail)
       console.log('Top match:', topMatch.program.provider)
       return NextResponse.json({
         success: true,
@@ -55,7 +100,7 @@ export async function POST(req: NextRequest) {
     // Send the email
     const { data, error } = await resend.emails.send({
       from: 'VPP Finder <results@vppfinder.com.au>',
-      to: email,
+      to: normalizedEmail,
       subject: `Your VPP Match Results - ${battery} in ${location}`,
       react: ResultsEmail({
         battery,
