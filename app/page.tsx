@@ -9,6 +9,8 @@ import { Footer } from '@/components/layout/footer'
 import { motion } from 'framer-motion'
 import { motionPresets, transitionPresets, createStagger } from '@/lib/animations'
 import { programs } from '@/data/programs'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
+import { homepageFAQ } from '@/data/faq'
 
 export default function HomePage() {
   return (
@@ -383,6 +385,19 @@ export default function HomePage() {
               </Button>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-muted/30" id="faq">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <FAQAccordion
+              title="Common Questions"
+              subtitle="Everything you need to know about Virtual Power Plants"
+              items={homepageFAQ}
+            />
+          </div>
         </div>
       </section>
 
