@@ -156,7 +156,7 @@ export default function HomePage() {
                 {
                   step: '01',
                   title: 'Tell Us About Your Battery',
-                  description: 'Chat with our AI or use our quick calculator to share your battery details and location.',
+                  description: 'Use our quick calculator or chat with our AI to share your battery details.',
                   duration: '2 min'
                 },
                 {
@@ -168,7 +168,7 @@ export default function HomePage() {
                 {
                   step: '03',
                   title: 'Sign Up & Start Earning',
-                  description: 'Apply directly through our partner programs and start earning within days.',
+                  description: 'Apply directly with your chosen VPP provider and start earning within days.',
                   duration: '1 week'
                 },
               ].map((item, idx) => (
