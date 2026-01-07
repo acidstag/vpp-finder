@@ -81,12 +81,12 @@ export function ProgramCard({ match, featured = false }: ProgramCardProps) {
 
       <CardContent className="space-y-8 pt-6">
         {/* Metrics Grid - Enterprise Style */}
-        <div className="grid grid-cols-2 gap-6 pb-6 border-b border-border">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 pb-6 border-b border-border">
           <div className="space-y-1">
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
               Annual Earnings
             </div>
-            <div className="text-3xl font-mono font-bold">
+            <div className="text-xl sm:text-3xl font-mono font-bold">
               ${estimatedEarnings.min}-{estimatedEarnings.max}
             </div>
           </div>
@@ -94,7 +94,7 @@ export function ProgramCard({ match, featured = false }: ProgramCardProps) {
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
               Sign-up Bonus
             </div>
-            <div className="text-3xl font-mono font-bold text-accent">
+            <div className="text-xl sm:text-3xl font-mono font-bold text-accent">
               ${estimatedEarnings.signupBonus}
             </div>
           </div>
@@ -102,7 +102,7 @@ export function ProgramCard({ match, featured = false }: ProgramCardProps) {
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
               VPP Rate
             </div>
-            <div className="text-3xl font-mono font-bold">
+            <div className="text-xl sm:text-3xl font-mono font-bold">
               ${program.vppRate}/kWh
             </div>
           </div>
@@ -110,7 +110,7 @@ export function ProgramCard({ match, featured = false }: ProgramCardProps) {
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
               Control
             </div>
-            <div className="text-3xl font-mono font-bold">
+            <div className="text-xl sm:text-3xl font-mono font-bold">
               {program.controlLevel === 'full' ? 'Full' : program.controlLevel === 'semi' ? 'Semi' : 'Auto'}
             </div>
           </div>
