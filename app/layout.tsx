@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
   description: 'Compare 11 Virtual Power Plant programs in Australia. Earn $800-1,200/year from your battery. AI-powered matching in 2 minutes. Free, no signup required.',
   verification: {
-    google: 'FLseO-XErqngSTJ2JsrYZ_NVE_wNugpMXYiydUSLwMk',
+    google: 'mKyqcSCdr2dmspd8F9E65y926K2s2EQyhn91p0wGp7w',
   },
   icons: {
     icon: [
