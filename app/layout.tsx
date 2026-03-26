@@ -85,6 +85,7 @@ export const metadata: Metadata = {
 
 import { Navigation } from '@/components/layout/navigation'
 import { GoogleAnalytics } from '@/components/analytics/google-analytics'
+import { Analytics } from '@vercel/analytics/next'
 
 export default function RootLayout({
   children,
@@ -135,6 +136,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <Navigation />
         <div className="pt-16">{children}</div>
+        <Analytics />
       </body>
     </html>
   )
