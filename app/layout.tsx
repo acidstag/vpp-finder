@@ -20,7 +20,7 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
-  description: 'Compare 11 Virtual Power Plant programs in Australia. Earn $800-1,200/year from your battery. AI-powered matching in 2 minutes. Free, no signup required.',
+  description: 'Compare Australian Virtual Power Plant programs. Earn more from your battery with AI-powered matching in 2 minutes. Free, no signup required.',
   verification: {
     google: 'mKyqcSCdr2dmspd8F9E65y926K2s2EQyhn91p0wGp7w',
   },
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'VPP Finder' }],
   openGraph: {
     title: 'VPP Finder | Compare Virtual Power Plant Programs',
-    description: 'Find the best VPP program for your battery. Compare 11 programs, earn $800-1,200/year. AI-powered matching in 2 minutes.',
+    description: 'Find the best VPP program for your battery. Compare programs and earn more with AI-powered matching in 2 minutes.',
     url: 'https://vppfinder.com.au',
     siteName: 'VPP Finder',
     locale: 'en_AU',

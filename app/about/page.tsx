@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Footer } from '@/components/layout/footer'
 import { transitionPresets } from '@/lib/animations'
+import { programCount } from '@/lib/program-stats'
+import { programs } from '@/data/programs'
 import Link from 'next/link'
 
 export default function AboutPage() {
@@ -62,7 +64,7 @@ export default function AboutPage() {
               <Card className="p-8">
                 <h2 className="font-display font-bold text-2xl mb-4">Our Data</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  We maintain detailed information on 11 active VPP programs across Australia.
+                  We maintain detailed information on {programCount} active VPP programs across Australia.
                   Our data is sourced from:
                 </p>
                 <ul className="list-disc list-inside text-muted-foreground space-y-2 mb-4">
@@ -72,7 +74,7 @@ export default function AboutPage() {
                   <li>Community feedback from program participants</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed">
-                  Data is verified monthly to ensure accuracy. Last update: January 2025.
+                  Data is verified regularly to ensure accuracy. Last update: {programs.length > 0 ? new Date(programs[0].updatedAt).toLocaleDateString('en-AU', { month: 'long', year: 'numeric' }) : 'recently'}.
                 </p>
               </Card>
 

@@ -9,6 +9,7 @@ import { Footer } from '@/components/layout/footer'
 import { motion } from 'framer-motion'
 import { motionPresets, transitionPresets, createStagger } from '@/lib/animations'
 import { programs } from '@/data/programs'
+import { programCount, avgAnnualEarnings, avgSignupBonus, earningsRangeMax } from '@/lib/program-stats'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { homepageFAQ } from '@/data/faq'
 
@@ -39,7 +40,7 @@ export default function HomePage() {
                   <span className="text-accent">Virtual Power Plant</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-                  Earn $800-1,200/year from your battery.{' '}
+                  Earn ${avgAnnualEarnings.toLocaleString()}/year average from your battery.{' '}
                   Compare programs in 2 minutes.
                 </p>
               </motion.div>
@@ -101,20 +102,20 @@ export default function HomePage() {
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     <MetricCard
                       label="Annual Earnings"
-                      value="$1,047"
-                      sublabel="per year"
-                      trend={{ value: "↑ $640 vs feed-in", positive: true }}
+                      value={`$${avgAnnualEarnings.toLocaleString()}`}
+                      sublabel="per year average"
+                      trend={{ value: "↑ vs feed-in tariff", positive: true }}
                       delay={0.5}
                     />
                     <MetricCard
                       label="Sign-up Bonus"
-                      value="$200"
+                      value={`$${avgSignupBonus}`}
                       sublabel="average"
                       delay={0.6}
                     />
                     <MetricCard
                       label="Programs"
-                      value="11"
+                      value={`${programCount}`}
                       sublabel="active nationwide"
                       delay={0.7}
                     />
@@ -164,7 +165,7 @@ export default function HomePage() {
                 {
                   step: '02',
                   title: 'Get Personalized Matches',
-                  description: 'We compare 11 VPP programs to find the best fit for your setup and preferences.',
+                  description: `We compare ${programCount} VPP programs to find the best fit for your setup and preferences.`,
                   duration: 'Instant'
                 },
                 {
@@ -223,9 +224,9 @@ export default function HomePage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
               {[
-                { label: 'VPP Programs', value: '11', sublabel: 'Compared nationwide' },
-                { label: 'Potential Earnings', value: '$800-1,500', sublabel: 'Per year (varies by program)' },
-                { label: 'vs Feed-in Tariff', value: '+$640', sublabel: 'Additional annual value*' },
+                { label: 'VPP Programs', value: `${programCount}`, sublabel: 'Compared nationwide' },
+                { label: 'Potential Earnings', value: `$${avgAnnualEarnings.toLocaleString()}-${earningsRangeMax.toLocaleString()}`, sublabel: 'Per year (varies by program)' },
+                { label: 'vs Feed-in Tariff', value: `+$${avgAnnualEarnings - 407}`, sublabel: 'Additional annual value*' },
                 { label: 'Time to Compare', value: '2 min', sublabel: 'AI-powered matching' },
               ].map((stat, idx) => (
                 <motion.div
@@ -313,7 +314,7 @@ export default function HomePage() {
                 Available Programs
               </p>
               <h2 className="font-display font-bold text-3xl md:text-5xl mb-6">
-                11 VPP Programs Compared
+                {programCount} VPP Programs Compared
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 From major retailers to innovative startups, find the perfect match for your battery.
@@ -380,7 +381,7 @@ export default function HomePage() {
             <div className="text-center">
               <Button size="lg" asChild>
                 <Link href="/results?battery=tesla&location=2000&solar=6.6&preference=open">
-                  Compare All 11 Programs →
+                  Compare All {programCount} Programs →
                 </Link>
               </Button>
             </div>

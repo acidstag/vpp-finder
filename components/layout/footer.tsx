@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { Logo } from '@/components/ui/logo'
+import { programs } from '@/data/programs'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const lastUpdated = programs.length > 0 ? programs[0].updatedAt : ''
+  const updateLabel = lastUpdated ? new Date(lastUpdated).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' }) : ''
 
   return (
     <footer className="relative border-t border-border bg-card">
@@ -113,9 +116,9 @@ export function Footer() {
               © {currentYear} VPP Finder. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <span className="font-mono">Comparing 11 VPP programs</span>
+              <span className="font-mono">Comparing {programs.length} VPP programs</span>
               <span>•</span>
-              <span className="font-mono">Data verified Jan 2025</span>
+              <span className="font-mono">Data verified {updateLabel}</span>
             </div>
           </div>
         </div>

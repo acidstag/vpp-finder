@@ -23,7 +23,7 @@ export const vppFAQ: FAQItem[] = [
   },
   {
     question: "Do I need to switch electricity retailers?",
-    answer: "It depends on the VPP program. Some programs (like Tesla VPP and Simply Energy) require you to be with their electricity retailer. Others (like Amber Electric) let you keep your current retailer. Our AI advisor filters programs based on whether you want to switch or not, so you'll only see options that match your preference."
+    answer: "It depends on the VPP program. Some programs (like AGL and Origin) require you to be their electricity customer. Others (like Amber Electric, ShineHub, and Sonnen) let you keep your current retailer. Our AI advisor filters programs based on whether you want to switch or not, so you'll only see options that match your preference."
   },
   {
     question: "Will this damage my battery?",
@@ -39,7 +39,7 @@ export const vppFAQ: FAQItem[] = [
   },
   {
     question: "Are there any hidden costs or fees?",
-    answer: "No. Joining a VPP is completely free. There are no installation fees, equipment costs, or monthly charges. The VPP provider may install a small gateway device (at no cost to you) to connect your battery to their system. You only earn money - you don't pay anything. The only 'cost' is that a portion of your battery's capacity is available to support the grid during peak times."
+    answer: "Most VPP programs are free to join. A few have small costs - for example, Diamond Energy charges a $68 establishment fee, and Amber Electric has a $25/month subscription. The VPP provider may install a small gateway device (at no cost to you) to connect your battery to their system. The only ongoing 'cost' for most programs is that a portion of your battery's capacity is available to support the grid during peak times."
   },
   {
     question: "How long does it take to sign up?",
