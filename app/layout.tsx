@@ -19,7 +19,11 @@ const syne = Syne({
 })
 
 export const metadata: Metadata = {
-  title: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
+  metadataBase: new URL('https://vppfinder.com.au'),
+  title: {
+    default: 'VPP Finder | Find Your Perfect Virtual Power Plant in Australia',
+    template: '%s | VPP Finder',
+  },
   description: 'Compare Australian Virtual Power Plant programs. Earn more from your battery with AI-powered matching in 2 minutes. Free, no signup required.',
   verification: {
     google: 'mKyqcSCdr2dmspd8F9E65y926K2s2EQyhn91p0wGp7w',
@@ -36,19 +40,25 @@ export const metadata: Metadata = {
   keywords: [
     'VPP Australia',
     'Virtual Power Plant',
-    'battery earnings',
-    'solar battery',
+    'VPP comparison Australia',
+    'best VPP program',
+    'battery earnings Australia',
+    'solar battery VPP',
     'Tesla Powerwall VPP',
     'home battery program',
     'VPP comparison',
-    'energy storage',
     'Amber SmartShift',
     'AGL VPP',
-    'Origin VPP',
+    'Origin Loop VPP',
+    'VPP earnings calculator',
+    'virtual power plant comparison',
   ],
   authors: [{ name: 'VPP Finder' }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'VPP Finder | Compare Virtual Power Plant Programs',
+    title: 'VPP Finder | Compare Virtual Power Plant Programs in Australia',
     description: 'Find the best VPP program for your battery. Compare programs and earn more with AI-powered matching in 2 minutes.',
     url: 'https://vppfinder.com.au',
     siteName: 'VPP Finder',
@@ -58,7 +68,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'VPP Finder | Compare Virtual Power Plant Programs',
-    description: 'Find the best VPP program for your battery. Earn $800-1,200/year.',
+    description: 'Find the best VPP program for your Australian battery. Free AI-powered comparison in 2 minutes.',
   },
   robots: {
     index: true,
@@ -82,8 +92,46 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-AU" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${syne.variable} font-sans antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://vppfinder.com.au/#organization',
+                  name: 'VPP Finder',
+                  url: 'https://vppfinder.com.au',
+                  description: 'Independent Virtual Power Plant comparison tool for Australian battery owners',
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://vppfinder.com.au/#website',
+                  url: 'https://vppfinder.com.au',
+                  name: 'VPP Finder',
+                  publisher: { '@id': 'https://vppfinder.com.au/#organization' },
+                  inLanguage: 'en-AU',
+                },
+                {
+                  '@type': 'WebApplication',
+                  name: 'VPP Finder',
+                  url: 'https://vppfinder.com.au/chat',
+                  applicationCategory: 'UtilitiesApplication',
+                  operatingSystem: 'Any',
+                  offers: {
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'AUD',
+                  },
+                  description: 'AI-powered tool to compare Virtual Power Plant programs for Australian battery owners',
+                },
+              ],
+            }),
+          }}
+        />
         <GoogleAnalytics />
         <Navigation />
         <div className="pt-16">{children}</div>

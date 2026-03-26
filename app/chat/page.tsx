@@ -2,11 +2,14 @@ import { ChatInterface } from '@/components/chat/chat-interface'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'AI Chat | Find Your Perfect VPP Program | VPP Finder',
-  description: 'Chat with our AI advisor to find the perfect Virtual Power Plant program for your battery. Get personalized recommendations in 2 minutes.',
+  title: 'AI VPP Advisor | Find Your Perfect Program',
+  description: 'Chat with our AI advisor to find the best Virtual Power Plant program for your battery. Get personalised recommendations for Australian VPP programs in 2 minutes.',
+  alternates: {
+    canonical: '/chat',
+  },
   openGraph: {
-    title: 'AI Chat | VPP Finder',
-    description: 'Get personalized VPP program recommendations through AI-powered chat.',
+    title: 'AI VPP Advisor | Find Your Perfect Program',
+    description: 'Get personalised VPP program recommendations through AI-powered chat. Free, 2-minute comparison.',
   },
 }
 
